@@ -104,6 +104,38 @@
 
   .score-bar span.mistakes-bad { background: #fff0ee; border-color: var(--rust); color: var(--rust); }
 
+  .unit-filter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  .unit-filter-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.8rem;
+    color: var(--sepia);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .unit-btn {
+    padding: 0.35rem 1rem;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.8rem;
+    background: white;
+    border: 1px solid var(--sepia);
+    cursor: pointer;
+    color: var(--sepia);
+    border-radius: 2px;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .unit-btn:hover { background: var(--aged); }
+  .unit-btn.active { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
   /* DATE GAME CARDS */
   .game-container {
     max-width: 900px;
@@ -271,7 +303,7 @@
 
 <header>
   <h1>European History Games</h1>
-  <p>Scientific Revolution to 1848</p>
+  <p>Scientific Revolution · Nationalism · Art & Music</p>
 </header>
 
 <div class="tabs">
@@ -286,6 +318,13 @@
     <span>Round: <b id="round">1</b></span>
     <span id="mistakes-badge">Mistakes this round: <b id="mistakes">0</b></span>
     <span>Streak: <b id="streak">0</b> 🔥</span>
+  </div>
+
+  <div class="unit-filter">
+    <span class="unit-filter-label">Unit:</span>
+    <button class="unit-btn active" onclick="setUnit('all', this)">All</button>
+    <button class="unit-btn" onclick="setUnit('unit1', this)">Unit 1 · Rev &amp; Napoleon</button>
+    <button class="unit-btn" onclick="setUnit('unit2', this)">Unit 2 · Nationalism &amp; Art</button>
   </div>
 
   <p class="hint">Select an event, then select its matching year — or vice versa</p>
@@ -315,6 +354,13 @@
     <span>Map Score: <b id="map-score">0</b></span>
     <span>Round: <b id="map-round">1</b></span>
     <span id="map-mistakes-badge">Mistakes this round: <b id="map-mistakes">0</b></span>
+  </div>
+
+  <div class="unit-filter">
+    <span class="unit-filter-label">Unit:</span>
+    <button class="unit-btn active" onclick="setMapUnit('all', this)">All</button>
+    <button class="unit-btn" onclick="setMapUnit('unit1', this)">Unit 1 · Rev &amp; Napoleon</button>
+    <button class="unit-btn" onclick="setMapUnit('unit2', this)">Unit 2 · Nationalism &amp; Art</button>
   </div>
 
   <div id="map-result-banner" class="result-banner">
@@ -353,30 +399,59 @@ function switchTab(tab) {
 
 // ===== GAME 1: DATE MATCHING =====
 const ALL_PAIRS = [
-  { year:"1543", event:"Copernicus publishes heliocentric model — Scientific Revolution begins" },
-  { year:"1687", event:"Newton publishes Principia, establishing laws of gravity" },
-  { year:"1750", event:"Diderot publishes Prospectus for the Encyclopedia of Arts & Sciences" },
-  { year:"1784", event:"Kant publishes 'What is Enlightenment?'" },
-  { year:"1789", event:"Storming of the Bastille — French Revolution begins" },
-  { year:"1789", event:"Declaration of the Rights of Man & Citizen adopted" },
-  { year:"1792", event:"Radical Phase of the French Revolution begins" },
-  { year:"1793", event:"Robespierre leads Committee of Public Safety — Reign of Terror" },
-  { year:"1794", event:"Robespierre guillotined by the National Convention" },
-  { year:"1799", event:"Napoleon's Coup d'état — seizes power in France" },
-  { year:"1804", event:"Napoleon declares himself Emperor of France" },
-  { year:"1815", event:"Napoleon defeated at the Battle of Waterloo" },
-  { year:"1815", event:"Congress of Vienna — monarchies form Concert of Europe" },
-  { year:"1819", event:"Carlsbad Resolutions — Metternich suppresses liberalism in German states" },
-  { year:"1820", event:"Metternich's Secret Memorandum to Tsar Alexander I on conservatism" },
-  { year:"1830", event:"July Ordinances — Charles X sparks revolution; Louis Philippe takes power" },
-  { year:"1844", event:"Engels witnesses horrific working-class conditions in Industrial Manchester" },
-  { year:"1848", event:"Marx & Engels publish The Communist Manifesto" },
-  { year:"1848", event:"Wave of revolutions across Europe; Louis Philippe abdicates" },
+  // ── UNIT 1: Scientific Revolution → 1848 ──
+  { unit:"unit1", year:"1543", event:"Copernicus publishes heliocentric model — Scientific Revolution begins" },
+  { unit:"unit1", year:"1687", event:"Newton publishes Principia, establishing laws of gravity" },
+  { unit:"unit1", year:"1750", event:"Diderot publishes Prospectus for the Encyclopedia of Arts & Sciences" },
+  { unit:"unit1", year:"1784", event:"Kant publishes 'What is Enlightenment?'" },
+  { unit:"unit1", year:"1789", event:"Storming of the Bastille — French Revolution begins" },
+  { unit:"unit1", year:"1789", event:"Declaration of the Rights of Man & Citizen adopted" },
+  { unit:"unit1", year:"1792", event:"Radical Phase of the French Revolution begins" },
+  { unit:"unit1", year:"1793", event:"Robespierre leads Committee of Public Safety — Reign of Terror" },
+  { unit:"unit1", year:"1794", event:"Robespierre guillotined by the National Convention" },
+  { unit:"unit1", year:"1799", event:"Napoleon's Coup d'état — seizes power in France" },
+  { unit:"unit1", year:"1804", event:"Napoleon declares himself Emperor of France" },
+  { unit:"unit1", year:"1815", event:"Napoleon defeated at the Battle of Waterloo" },
+  { unit:"unit1", year:"1815", event:"Congress of Vienna — monarchies form Concert of Europe" },
+  { unit:"unit1", year:"1819", event:"Carlsbad Resolutions — Metternich suppresses liberalism in German states" },
+  { unit:"unit1", year:"1820", event:"Metternich's Secret Memorandum to Tsar Alexander I on conservatism" },
+  { unit:"unit1", year:"1830", event:"July Ordinances — Charles X sparks revolution; Louis Philippe takes power" },
+  { unit:"unit1", year:"1844", event:"Engels witnesses horrific working-class conditions in Industrial Manchester" },
+  { unit:"unit1", year:"1848", event:"Marx & Engels publish The Communist Manifesto" },
+  { unit:"unit1", year:"1848", event:"Wave of revolutions across Europe; Louis Philippe abdicates" },
+
+  // ── UNIT 2: Nationalism, Unification, Art & Music ──
+  { unit:"unit2", year:"1848", event:"Revolutions erupt across Europe; rebels challenge Concert of Europe" },
+  { unit:"unit2", year:"1849", event:"Mazzini's Roman Republic crushed by French military force" },
+  { unit:"unit2", year:"1853", event:"Haussmannization of Paris begins under Napoleon III" },
+  { unit:"unit2", year:"1858", event:"Cavour allies with Napoleon III — Piedmont-France pact against Austria" },
+  { unit:"unit2", year:"1859", event:"Austria attacks Piedmont; France intervenes — Lombardy seized" },
+  { unit:"unit2", year:"1861", event:"Garibaldi unifies southern Italy; yields to Cavour for the monarchy" },
+  { unit:"unit2", year:"1862", event:"Bismarck delivers 'Blood & Iron' speech to Prussian Parliament" },
+  { unit:"unit2", year:"1866", event:"Prussia defeats Austria using Danish territory dispute as pretext" },
+  { unit:"unit2", year:"1870", event:"Italy formally unifies under the House of Savoy" },
+  { unit:"unit2", year:"1871", event:"Germany unifies after Franco-Prussian War under Prussian leadership" },
+  { unit:"unit2", year:"1837", event:"Daguerre creates first photograph — Still Life in Studio" },
+  { unit:"unit2", year:"1849", event:"Courbet paints The Stone Breakers — early Realist masterpiece" },
+  { unit:"unit2", year:"1863", event:"Manet paints Olympia — scandalizes Paris Salon with flat perspective" },
+  { unit:"unit2", year:"1872", event:"Monet paints Impression, Sunrise — names the Impressionist movement" },
+  { unit:"unit2", year:"1874", event:"Impressionists pool money and open their own exhibition in Paris" },
+  { unit:"unit2", year:"1877", event:"Monet paints La Gare St. Lazare — industrial steam and light" },
+  { unit:"unit2", year:"1875", event:"Mazzini publishes The Duties of Man — call for democratic unity" },
+  { unit:"unit2", year:"1875", event:"Bizet premieres Carmen — realistic opera set among working class" },
 ];
 
 const PAIRS = ALL_PAIRS.map((p,i) => ({...p, id:i}));
 let selEv=null, selYr=null, score=0, streak=0, dRound=0, roundMistakes=0;
 let currentPairs=[], matched=new Set();
+let activeUnit = 'all';
+
+function setUnit(unit, btn) {
+  activeUnit = unit;
+  document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  newRound();
+}
 
 function shuffle(a){ const arr=[...a]; for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
 
@@ -387,8 +462,9 @@ function newRound(){
   document.getElementById('mistakes').textContent='0';
   document.getElementById('mistakes-badge').className='';
   document.getElementById('result-banner').style.display='none';
+  const pool = activeUnit === 'all' ? shuffle(PAIRS) : shuffle(PAIRS.filter(p => p.unit === activeUnit));
   const usedYears=new Set(); currentPairs=[];
-  for(const p of shuffle(PAIRS)){ if(!usedYears.has(p.year)&&currentPairs.length<5){ usedYears.add(p.year); currentPairs.push(p); } }
+  for(const p of pool){ if(!usedYears.has(p.year)&&currentPairs.length<5){ usedYears.add(p.year); currentPairs.push(p); } }
   renderCards();
 }
 
@@ -461,23 +537,40 @@ newRound();
 
 // ===== GAME 2: MAP QUIZ WITH LEAFLET =====
 const ALL_CITIES = [
-  { name:"Paris",       lat:48.8566, lng:2.3522,   note:"French Revolution, Bastille, Napoleon's capital" },
-  { name:"Vienna",      lat:48.2082, lng:16.3738,  note:"Congress of Vienna 1815; Metternich's seat of power" },
-  { name:"London",      lat:51.5074, lng:-0.1278,  note:"Capital of Britain; center of Industrial Revolution" },
-  { name:"Manchester",  lat:53.4808, lng:-2.2426,  note:"Cotton manufacturing hub; Engels documented conditions here 1844" },
-  { name:"Waterloo",    lat:50.7150, lng:4.3950,   note:"Napoleon's final defeat, June 1815" },
-  { name:"Berlin",      lat:52.5200, lng:13.4050,  note:"Capital of Prussia; Carlsbad Resolutions 1819" },
-  { name:"Rome",        lat:41.9028, lng:12.4964,  note:"Seat of Catholic Church; opposed Scientific Revolution" },
-  { name:"Moscow",      lat:55.7558, lng:37.6173,  note:"Russian capital; Tsar Alexander I received Metternich's 1820 memo" },
-  { name:"Copenhagen",  lat:55.6761, lng:12.5683,  note:"Danish capital; Brahe's observatory was in this region" },
-  { name:"Versailles",  lat:48.8049, lng:2.1204,   note:"Royal palace; Louis XVI held Estates-General here 1789" },
-  { name:"Naples",      lat:40.8518, lng:14.2681,  note:"Major city in reactionary southern Italy" },
-  { name:"Frankfurt",   lat:50.1109, lng:8.6821,   note:"Free city in German Confederation; site of 1848 parliament" },
+  // Unit 1
+  { unit:"unit1", name:"Paris",       lat:48.8566, lng:2.3522,   note:"French Revolution, Bastille, Napoleon's capital" },
+  { unit:"unit1", name:"Vienna",      lat:48.2082, lng:16.3738,  note:"Congress of Vienna 1815; Metternich's seat of power" },
+  { unit:"unit1", name:"London",      lat:51.5074, lng:-0.1278,  note:"Capital of Britain; center of Industrial Revolution" },
+  { unit:"unit1", name:"Manchester",  lat:53.4808, lng:-2.2426,  note:"Cotton manufacturing hub; Engels documented conditions here 1844" },
+  { unit:"unit1", name:"Waterloo",    lat:50.7150, lng:4.3950,   note:"Napoleon's final defeat, June 1815" },
+  { unit:"unit1", name:"Berlin",      lat:52.5200, lng:13.4050,  note:"Capital of Prussia; Carlsbad Resolutions 1819" },
+  { unit:"unit1", name:"Rome",        lat:41.9028, lng:12.4964,  note:"Seat of Catholic Church; opposed Scientific Revolution" },
+  { unit:"unit1", name:"Moscow",      lat:55.7558, lng:37.6173,  note:"Russian capital; Tsar Alexander I received Metternich's 1820 memo" },
+  { unit:"unit1", name:"Copenhagen",  lat:55.6761, lng:12.5683,  note:"Danish capital; Brahe's observatory was in this region" },
+  { unit:"unit1", name:"Versailles",  lat:48.8049, lng:2.1204,   note:"Royal palace; Louis XVI held Estates-General here 1789" },
+  { unit:"unit1", name:"Naples",      lat:40.8518, lng:14.2681,  note:"Major city in reactionary southern Italy" },
+  { unit:"unit1", name:"Frankfurt",   lat:50.1109, lng:8.6821,   note:"Free city in German Confederation; site of 1848 parliament" },
+  // Unit 2
+  { unit:"unit2", name:"Turin",       lat:45.0703, lng:7.6869,   note:"Capital of Piedmont-Sardinia; Cavour's base for Italian unification" },
+  { unit:"unit2", name:"Milan",       lat:45.4642, lng:9.1900,   note:"Lombardy's capital; seized from Austria by Cavour & Napoleon III 1859" },
+  { unit:"unit2", name:"Palermo",     lat:38.1157, lng:13.3615,  note:"Sicily; where Garibaldi's Expedition of the Thousand landed 1860" },
+  { unit:"unit2", name:"Sedan",       lat:49.7019, lng:4.9400,   note:"Site of Franco-Prussian War battle 1870; Napoleon III captured here" },
+  { unit:"unit2", name:"Bayreuth",    lat:49.9456, lng:11.5713,  note:"Wagner's festival city; home of his Festspielhaus opera house" },
+  { unit:"unit2", name:"Hamburg",     lat:53.5753, lng:10.0153,  note:"Major German port; Brahms was born here" },
+  { unit:"unit2", name:"Prague",      lat:50.0755, lng:14.4378,  note:"Bohemian capital; Dvořák's homeland, center of Czech national music" },
 ];
 
 let mapScore=0, mapRound=0, mapMistakes=0;
 let mapCurrentCities=[], mapMatched=new Set(), selChip=null;
 let markers=[], openPopups=[];
+let activeMapUnit = 'all';
+
+function setMapUnit(unit, btn) {
+  activeMapUnit = unit;
+  document.querySelectorAll('#tab-map .unit-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if(leafletMap) newMapRound();
+}
 
 function initMap(){
   leafletMap = L.map('leaflet-map', {
@@ -512,9 +605,10 @@ function newMapRound(){
   document.getElementById('map-mistakes-badge').className='';
   document.getElementById('map-result-banner').style.display='none';
 
-  // Pick 5 cities, avoid too-close pairs
+  // Pick 5 cities, filtered by unit, avoid too-close pairs
+  const cityPool = activeMapUnit === 'all' ? ALL_CITIES : ALL_CITIES.filter(c => c.unit === activeMapUnit);
   const exclude = new Set();
-  const pool = shuffle(ALL_CITIES);
+  const pool = shuffle(cityPool);
   for(const city of pool){
     if(mapCurrentCities.length >= 5) break;
     if(city.name==='Manchester' && exclude.has('London')) continue;
